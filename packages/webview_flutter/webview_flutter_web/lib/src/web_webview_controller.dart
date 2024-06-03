@@ -18,7 +18,7 @@ import 'http_request_factory.dart';
 @immutable
 class WebWebViewControllerCreationParams
     extends PlatformWebViewControllerCreationParams {
-  /// Creates a new [AndroidWebViewControllerCreationParams] instance.
+  /// Creates a new [WebWebViewControllerCreationParams] instance.
   WebWebViewControllerCreationParams({
     @visibleForTesting this.httpRequestFactory = const HttpRequestFactory(),
   }) : super();
@@ -57,6 +57,13 @@ class WebWebViewController extends PlatformWebViewController {
 
   WebWebViewControllerCreationParams get _webWebViewParams =>
       params as WebWebViewControllerCreationParams;
+
+  /// Sets the IFrame Credentialless
+  /// https://developer.mozilla.org/en-US/docs/Web/Security/IFrame_credentialless
+  void setIFrameCredentialless(bool flag) {
+    _webWebViewParams.iFrame
+        .setAttribute('credentialless', flag ? 'true' : 'false');
+  }
 
   @override
   Future<void> loadHtmlString(String html, {String? baseUrl}) async {
@@ -99,7 +106,6 @@ class WebWebViewController extends PlatformWebViewController {
     final ContentType contentType = ContentType.parse(header);
     final Encoding encoding = Encoding.getByName(contentType.charset) ?? utf8;
 
-    // ignore: unsafe_html
     _webWebViewParams.iFrame.src = Uri.dataFromString(
       httpReq.body,
       mimeType: contentType.mimeType,

@@ -23,13 +23,24 @@ class _WebViewExample extends StatefulWidget {
 }
 
 class _WebViewExampleState extends State<_WebViewExample> {
-  final PlatformWebViewController _controller = PlatformWebViewController(
-    const PlatformWebViewControllerCreationParams(),
-  )..loadRequest(
-      LoadRequestParams(
-        uri: Uri.parse('https://flutter.dev'),
-      ),
-    );
+  final PlatformWebViewController _controller =
+      WebViewPlatform.instance is WebWebViewPlatform
+          ? (WebWebViewController(
+              const PlatformWebViewControllerCreationParams(),
+            )
+            ..setIFrameCredentialless(true)
+            ..loadRequest(
+              LoadRequestParams(
+                uri: Uri.parse('https://flutter.dev'),
+              ),
+            ))
+          : (PlatformWebViewController(
+              const PlatformWebViewControllerCreationParams(),
+            )..loadRequest(
+              LoadRequestParams(
+                uri: Uri.parse('https://flutter.dev'),
+              ),
+            ));
 
   @override
   Widget build(BuildContext context) {
